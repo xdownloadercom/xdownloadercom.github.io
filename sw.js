@@ -4,8 +4,8 @@ const urlsToCache = [
   "/",
   "/index.html",
   "/js/home.min.js",
-  "/public/icons/icon-192.png",
-  "/public/icons/icon-512.png",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
   "/manifest.json",
 ];
 

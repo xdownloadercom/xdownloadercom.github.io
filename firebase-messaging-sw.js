@@ -44,7 +44,7 @@ messaging.onBackgroundMessage(function (payload) {
   const notificationTitle = title;
   const notificationOptions = {
     body: body,
-    icon: "/public/icons/icon-192.png",
+    icon: "/icons/icon-192.png",
     data: payload,
   };
 
