@@ -77,7 +77,9 @@ self.addEventListener("fetch", (event) => {
       if (cachedResponse) {
         event.respondWith(cachedResponse);
       } else {
-        event.respondWith(fetch(event.request, { redirect: "follow" }));
+        event.respondWith(
+          fetch(event.request, { redirect: "follow", credentials: "include" })
+        );
       }
     });
     return;
@@ -90,8 +92,29 @@ self.addEventListener("fetch", (event) => {
         if (cachedResponse) {
           return cachedResponse;
         }
-        return fetch(event.request, { redirect: "follow" })
+        return fetch(event.request, {
+          redirect: "follow",
+          credentials: "include",
+        })
           .then((networkResponse) => {
+            // Set cookies from response headers if present
+            const setCookie = networkResponse.headers.get("set-cookie");
+            if (setCookie) {
+              // Note: Service workers cannot set document.cookie directly.
+              // To handle cookies, you may need to postMessage to the client.
+              event.waitUntil(
+                (async () => {
+                  const allClients = await self.clients.matchAll();
+                  for (const client of allClients) {
+                    client.postMessage({
+                      type: "set-cookie",
+                      cookie: setCookie,
+                    });
+                  }
+                })()
+              );
+            }
+
             if (
               networkResponse &&
               networkResponse.status === 200 &&
@@ -109,7 +132,7 @@ self.addEventListener("fetch", (event) => {
     );
   } else {
     // Use browser's fetch for all other requests
-    event.respondWith(fetch(event.request));
+    event.respondWith(fetch(event.request, { credentials: "include" }));
   }
 });
 
