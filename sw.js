@@ -71,6 +71,11 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const requestUrl = new URL(event.request.url);
 
+  // Helper to determine if credentials should be included
+  const shouldUseCredentials =
+    requestUrl.hostname === "api.x-downloader.com" ||
+    requestUrl.hostname === "x-downloader.com";
+
   // Always fetch from network for the root route (/) to respect redirects
   if (requestUrl.pathname === "/") {
     caches.match("/index.html").then((cachedResponse) => {
@@ -78,7 +83,10 @@ self.addEventListener("fetch", (event) => {
         event.respondWith(cachedResponse);
       } else {
         event.respondWith(
-          fetch(event.request, { redirect: "follow", credentials: "include" })
+          fetch(event.request, {
+            redirect: "follow",
+            credentials: shouldUseCredentials ? "include" : "same-origin",
+          })
         );
       }
     });
@@ -94,7 +102,7 @@ self.addEventListener("fetch", (event) => {
         }
         return fetch(event.request, {
           redirect: "follow",
-          credentials: "include",
+          credentials: shouldUseCredentials ? "include" : "same-origin",
         })
           .then((networkResponse) => {
             // Set cookies from response headers if present
@@ -132,7 +140,11 @@ self.addEventListener("fetch", (event) => {
     );
   } else {
     // Use browser's fetch for all other requests
-    event.respondWith(fetch(event.request, { credentials: "include" }));
+    event.respondWith(
+      fetch(event.request, {
+        credentials: shouldUseCredentials ? "include" : "same-origin",
+      })
+    );
   }
 });
 
